@@ -1,8 +1,8 @@
 # TODO inicializar todo :(
-
+from app import create_app
 from flask import Flask, render_template, request, redirect
 
-app = Flask(__name__)
+app = create_app()
 
 @app.route("/")
 def index():
