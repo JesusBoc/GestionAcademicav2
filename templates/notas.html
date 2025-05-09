@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Notas Registradas</h2>
+    {% if notas %}
+        <table class="table table-striped mt-4">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Asignatura</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nota in notas %}
+                    <tr>
+                        <td>{{ nota.nombre }}</td>
+                        <td>{{ nota.asignatura }}</td>
+                        <td>{{ nota.nota }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-muted mt-4">Aún no se han registrado notas.</p>
+    {% endif %}
+{% endblock %}
