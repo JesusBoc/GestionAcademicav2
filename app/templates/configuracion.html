@@ -2,24 +2,50 @@
 {% block content %}
 
 <div class="container mt-5">
-  <h2>Configuración</h2>
+  <h1>Configuración</h2>
 
-  <button class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#modalCrearNivel">Crear Nivel</button>
-
-  {% if niveles %}
+    <h2>Niveles</h2>
+    <button class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#modalCrearNivel">Crear Nivel</button>
+    {% if niveles %}
     <ul id="lista-niveles" class="list-group">
       {% for nivel in niveles %}
-        <li class="list-group-item">{{ nivel.nombre }}</li>
+      <li class="list-group-item">{{ nivel.nombre }}</li>
       {% endfor %}
     </ul>
-  {% else %}
+    {% else %}
     <p id="mensaje-vacio">No hay niveles registrados.</p>
     <ul id="lista-niveles" class="list-group d-none"></ul>
-  {% endif %}
+    {% endif %}
+
+    <h2>Grados</h2>
+    <button class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#modalCrearGrados">Crear Grado</button>
+    {% if cursos %}
+    <ul id="lista-cursos" class="list-group">
+      {% for nivel in niveles %}
+      <li class="list-group-item">{{ nivel.nombre }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p id="mensaje-vacio">No hay cursos registrados.</p>
+    <ul id="lista-cursos" class="list-group d-none"></ul>
+    {% endif %}
+
+    <h2>Salones</h2>
+    <button class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#modalCrearSalones">Crear Grado</button>
+    {% if Salones %}
+    <ul id="lista-salones" class="list-group">
+      {% for nivel in niveles %}
+      <li class="list-group-item">{{ nivel.nombre }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p id="mensaje-vacio">No hay salones registrados.</p>
+    <ul id="lista-salones" class="list-group d-none"></ul>
+    {% endif %}
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modalCrearNivel" tabindex="-1" aria-hidden="true">
+<div class="modal" id="modalCrearNivel" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <form id="formCrearNivel" class="modal-content">
       <div class="modal-header">
@@ -42,28 +68,31 @@
 
 <!-- Toasts -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-  <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+  <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive"
+    aria-atomic="true">
     <div class="d-flex">
       <div class="toast-body" id="toast-body">
         Nivel creado correctamente.
       </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+        aria-label="Cerrar"></button>
     </div>
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
 <script>
   const toastElement = new bootstrap.Toast(document.getElementById('toast'));
-
-  $('#formCrearNivel').on('submit', function(e) {
+  const modal = new bootstrap.Modal(document.getElementById('modalCrearNivel'))
+  $('#formCrearNivel').on('submit', function (e) {
     e.preventDefault();
     $.ajax({
-      url: '/crear_nivel',
+      url: 'configurar/crear_nivel',
       type: 'POST',
       data: $(this).serialize(),
-      success: function(response) {
-        $('#modalCrearNivel').modal('hide');
+      success: function (response) {
+        document.activeElement.blur();
+        modal.hide();
         $('#nombre').val('');
 
         const nuevoNivel = `<li class="list-group-item">${response.nivel.nombre}</li>`;
@@ -78,7 +107,7 @@
         $('#mensaje-vacio').hide();
         $('#lista-niveles').removeClass('d-none');
       },
-      error: function(xhr) {
+      error: function (xhr) {
         $('#toast').removeClass('bg-success').addClass('bg-danger');
         $('#toast-body').text(xhr.responseJSON?.message || 'Error al crear nivel.');
         toastElement.show();
