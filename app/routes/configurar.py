@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
 from app.utils.functions import commit
-from sqlalchemy.exc import SQLAlchemyError
 from app import db
 from app.models.connections import Nivel
 
