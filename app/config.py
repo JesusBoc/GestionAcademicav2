@@ -1,5 +1,5 @@
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///./data/database.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///../app/data/database.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class TestingConfig(Config):
