@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
+from app.utils.functions import commit
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
 from app.models.connections import Nivel
@@ -12,16 +13,6 @@ def crear_nivel():
         return jsonify({'success': False, 'message': 'El nombre es requerido.'}), 400
 
     nuevo_nivel = Nivel(nombre=nombre)
-    try:
-        db.session.add(nuevo_nivel)
-        db.session.commit()
-        return jsonify({
-            'success': True,
-            'message': 'Nivel creado correctamente.',
-            'nivel': {'id': nuevo_nivel.id, 'nombre': nuevo_nivel.nombre}
-        })
-    except SQLAlchemyError as e:
-        return jsonify({
-                'message': f"No se pudo crear el nivel: {e}",
-                'status': 400,
-            }), 400
+    return commit(nuevo_nivel,
+           "Nivel creado correctamente",
+           "No se pudo crear el nivel")
