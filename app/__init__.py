@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from .routes import main
-from .routes.cursos import cursos_bp
+from .routes import getMainBP
+from routes.cursos import cursos_bp
 
 db = SQLAlchemy()
 
@@ -15,6 +15,6 @@ def create_app(config_class='app.config.Config'):
     with app.app_context():
         db.create_all()
         
-    app.register_blueprint(main)
+    app.register_blueprint(getMainBP())
     app.register_blueprint(cursos_bp)
     return app

@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container mt-5">
+  <h2>Configuración</h2>
+
+  <button class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#modalCrearNivel">Crear Nivel</button>
+
+  {% if niveles %}
+    <ul id="lista-niveles" class="list-group">
+      {% for nivel in niveles %}
+        <li class="list-group-item">{{ nivel.nombre }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p id="mensaje-vacio">No hay niveles registrados.</p>
+    <ul id="lista-niveles" class="list-group d-none"></ul>
+  {% endif %}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearNivel" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="formCrearNivel" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Nivel</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre del Nivel</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toast-body">
+        Nivel creado correctamente.
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const toastElement = new bootstrap.Toast(document.getElementById('toast'));
+
+  $('#formCrearNivel').on('submit', function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: '/crear_nivel',
+      type: 'POST',
+      data: $(this).serialize(),
+      success: function(response) {
+        $('#modalCrearNivel').modal('hide');
+        $('#nombre').val('');
+
+        const nuevoNivel = `<li class="list-group-item">${response.nivel.nombre}</li>`;
+        $('#lista-niveles').append(nuevoNivel);
+
+        // Mostrar toast
+        $('#toast').removeClass('bg-danger').addClass('bg-success');
+        $('#toast-body').text(response.message);
+        toastElement.show();
+
+        // Ocultar mensaje vacío si es la primera vez
+        $('#mensaje-vacio').hide();
+        $('#lista-niveles').removeClass('d-none');
+      },
+      error: function(xhr) {
+        $('#toast').removeClass('bg-success').addClass('bg-danger');
+        $('#toast-body').text(xhr.responseJSON?.message || 'Error al crear nivel.');
+        toastElement.show();
+      }
+    });
+  });
+</script>
+
+{% endblock %}
