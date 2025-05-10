@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Float, Date
-from enums import Periodos, EstadoAsistencia
+from .enums import Periodos, EstadoAsistencia
 
 class Nivel(db.Model):
     __tablename__ = 'niveles'

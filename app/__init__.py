@@ -5,11 +5,10 @@ from .routes.cursos import cursos_bp
 
 db = SQLAlchemy()
 
-def create_app():
+def create_app(config_class='app.config.Config'):
     app = Flask(__name__)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/app.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config.from_object(config_class)
 
     db.init_app(app)
 
