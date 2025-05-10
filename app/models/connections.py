@@ -1,12 +1,6 @@
 from app import db
-import enum
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum
-
-class Periodos(enum.Enum):
-    PRIMERO = 1
-    SEGUNDO = 2
-    TERCERO = 3
-    CUARTO = 4
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Float, Date
+from enums import Periodos, EstadoAsistencia
 
 class Nivel(db.Model):
     __tablename__ = 'niveles'
@@ -24,7 +18,7 @@ class Grado(db.Model):
     nombre = Column(String(50), nullable=False, unique=True)
     nivel_id = Column(Integer, ForeignKey('niveles.id'), nullable=False)
     salones = db.relationship('Salon', backref='grado', lazy=True)
-    criterios = db.relationship('Criterio', 'grado')
+    criterios = db.relationship('Criterio', backref='grado', lazy=True)
 
 class Salon(db.Model):
     __tablename__ = 'salones'
@@ -66,7 +60,7 @@ class Clase(db.Model):
 
     @property
     def nombre_generado(self):
-        return "f{self.asignatura.nombre} - {self.salon.nombre}"
+        return f"{self.asignatura.nombre} - {self.salon.nombre}"
 
 
 class Estudiante(db.Model):
@@ -76,9 +70,10 @@ class Estudiante(db.Model):
     nombre = Column(String(50), nullable=False)
     apellido = Column(String(50), nullable=False)
     salon_id = Column(Integer, ForeignKey('salones.id'), nullable=False)
+    notas = db.relationship('Nota', backref='estudiante')
 
 class Criterio(db.Model):
-    __tablename__ = 'estudiantes'
+    __tablename__ = 'criterios'
 
     id = Column(Integer, primary_key=True)
     nombre = Column(String(50), nullable=False, unique=True)
@@ -89,8 +84,28 @@ class Criterio(db.Model):
     actividades = db.relationship('Actividad', backref='criterio')
 
 class Actividad(db.Model):
-    __tablename__ = 'estudiantes'
+    __tablename__ = 'actividades'
 
     id = Column(Integer, primary_key=True)
     nombre = Column(String(50), nullable=False)
     clase_id = Column(Integer, ForeignKey('clases.id'), nullable=False)
+    criterio_id = Column(Integer, ForeignKey('criterios.id'), nullable=False)
+    notas = db.relationship('Nota', backref='actividad', lazy=True)
+
+class Nota(db.Model):
+    __tablename__ = 'notas'
+
+    id = Column(Integer, primary_key=True)
+    calificacion = Column(Float)
+    estudiante_id = Column(Integer, ForeignKey('estudiantes.id'), nullable=False)
+    actividad_id = Column(Integer, ForeignKey('actividades.id'), nullable=False)
+
+
+class Asistencia(db.Model):
+    __tablename__ = 'asistencias'
+
+    id = Column(Integer, primary_key=True)
+    estudiante_id = Column(Integer, ForeignKey('estudiantes.id'), nullable=False)
+    clase_id = Column(Integer, ForeignKey('clases.id'), nullable=False)
+    estado = Column(Enum(EstadoAsistencia), nullable=False)
+    fecha = Column(Date, nullable=False)
