@@ -1,4 +1,3 @@
-# TODO inicializar todo :(
 from app import create_app
 from app.models.connections import *
 

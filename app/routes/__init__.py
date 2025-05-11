@@ -5,8 +5,8 @@ main = Blueprint('main',__name__)
 @main.route('/')
 def index():
     return render_template('index.html')
+
 @main.route('/configurar')
 def configurar():
     niveles = Nivel.query.all()
     return render_template('configuracion.html',niveles=niveles)
-

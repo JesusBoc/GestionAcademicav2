@@ -3,7 +3,7 @@ from app.utils.functions import commit
 from app import db
 from app.models.connections import Nivel, Grado
 
-config_bp = Blueprint('cursos',__name__, url_prefix='/configurar')
+config_bp = Blueprint('configurar',__name__, url_prefix='/configurar')
 
 @config_bp.route('/crear_nivel', methods=['POST'])
 def crear_nivel():
