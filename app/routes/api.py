@@ -5,7 +5,7 @@ from app.models.connections import Nivel, Grado
 
 api_bp = Blueprint('api',__name__, url_prefix='/api')
 
-@api_bp.route('/')
+@api_bp.route('')
 def api():
     return jsonify(
         {
@@ -17,18 +17,22 @@ def api():
 @api_bp.route('/get_niveles') 
 def get_niveles():
     niveles: List[Nivel] = Nivel.query.all()
-    out = {}
-    for nivel in niveles:
-        out[nivel.id] = nivel.nombre
+    out = [nivel.to_dict() for nivel in niveles]
     return jsonify(out)
 
 @api_bp.route('/get_all_grados')
 def get_all_grados():
     grados: List[Grado] = Grado.query.all()
+    out = [grado.to_dict() for grado in grados]
+    return jsonify(out)
+
+""" @api_bp.route('/grado/<int:grado_id>')
+def get_all_grados(grado_id):
+    grado = Grado.query.get_or_404(grado_id)
     out = {}
     for grado in grados:
         out[grado.id] = {
             'nombre': grado.nombre,
             'nivel_id': grado.nivel_id,
         }
-    return jsonify(out)
+    return jsonify(out) """
