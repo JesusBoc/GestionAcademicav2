@@ -15,7 +15,9 @@ def create_app(config_class='app.config.Config'):
 
     from app.routes import main as main_blueprint
     from app.routes.configurar import config_bp as config_blueprint
+    from app.routes.api import api_bp as api_blueprint
         
     app.register_blueprint(main_blueprint)
     app.register_blueprint(config_blueprint)
+    app.register_blueprint(api_blueprint)
     return app
