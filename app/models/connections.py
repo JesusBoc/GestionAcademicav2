@@ -156,6 +156,14 @@ class Clase(db.Model):
         }
 
 class Estudiante(db.Model):
+    """
+    Crea un nuevo estudiante del modelo de base de datos
+
+    Args:
+        nombre (str): El nombre
+        apellido (str): El apellido del estudiante
+        salon_id (int): El id del salón al que pertenece
+    """
     __tablename__ = 'estudiantes'
 
     id = Column(Integer, primary_key=True)

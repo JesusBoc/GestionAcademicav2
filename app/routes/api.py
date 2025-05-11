@@ -1,7 +1,7 @@
 from typing import List
 from flask import Blueprint, jsonify
 from app.utils.functions import commit
-from app.models.connections import Nivel, Grado
+from app.models.connections import *
 
 api_bp = Blueprint('api',__name__, url_prefix='/api')
 
@@ -26,13 +26,25 @@ def get_all_grados():
     out = [grado.to_dict() for grado in grados]
     return jsonify(out)
 
-""" @api_bp.route('/grado/<int:grado_id>')
-def get_all_grados(grado_id):
-    grado = Grado.query.get_or_404(grado_id)
-    out = {}
-    for grado in grados:
-        out[grado.id] = {
-            'nombre': grado.nombre,
-            'nivel_id': grado.nivel_id,
-        }
-    return jsonify(out) """
+@api_bp.route('/get_all_grados_deep')
+def get_all_grados_deep():
+    grados: List[Grado] = Grado.query.all()
+    out = [grado.to_dict_deep() for grado in grados]
+    return jsonify(out)
+
+@api_bp.route('/get_all_salones')
+def get_all_salones():
+    salones: List[Salon] = Salon.query.all()
+    out = [salon.to_dict() for salon in salones]
+    return jsonify(out)
+
+@api_bp.route('/get_all_salones_deep')
+def get_all_salones_deep():
+    salones: List[Salon] = Salon.query.all()
+    out = [salon.to_dict_deep() for salon in salones]
+    return jsonify(out)
+
+@api_bp.route('/grado/<int:grado_id>')
+def get_grado(grado_id):
+    grado: Grado = Grado.query.get_or_404(grado_id)
+    return jsonify(grado.to_dict())
