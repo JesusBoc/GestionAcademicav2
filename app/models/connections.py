@@ -3,6 +3,12 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Float, Date
 from .enums import Periodos, EstadoAsistencia
 
 class Nivel(db.Model):
+    """
+    Crea un nuevo nivel del modelo de base de datos
+
+    Args:
+        nombre (str): El nombre del nivel
+    """
     __tablename__ = 'niveles'
 
     id = Column(Integer, primary_key=True)
@@ -25,6 +31,13 @@ class Nivel(db.Model):
 
 
 class Grado(db.Model):
+    """
+    Crea un nuevo grado del modelo de base de datos
+
+    Args:
+        nombre (str): El nombre del grado
+        nivel_id (int): Id del nivel al que pertenece
+    """
     __tablename__ = 'grados'
 
     id = Column(Integer, primary_key=True)
@@ -50,6 +63,14 @@ class Grado(db.Model):
         }
 
 class Salon(db.Model):
+    """
+    Crea una nueva nota del modelo de base de datos
+
+    Args:
+        nombre (str): El nombre del salón
+        grado_id (int): Id del grado al que pertenece el salón
+        actividad_id (int): Id de la actividad calificada
+    """
     __tablename__ = 'salones'
 
     id = Column(Integer, primary_key=True)
@@ -75,6 +96,13 @@ class Salon(db.Model):
         }
 
 class Profesor(db.Model):
+    """
+    Crea un nuevo profesor del modelo de base de datos
+
+    Args:
+        nombre (str): Nombre del profesor
+        apellido (str): Apellido del profesor
+    """
     __tablename__ = 'profesores'
 
     id = Column(Integer, primary_key=True)
@@ -102,6 +130,13 @@ class Profesor(db.Model):
         }
 
 class Asignatura(db.Model):
+    """
+    Crea una nueva asignatura del modelo de base de datos
+
+    Args:
+        nombre (str): El nombre de la asignatura
+        nivel_id (int): Id del nivel al que pertenece la asignatura
+    """
     __tablename__ = 'asignaturas'
 
     id = Column(Integer, primary_key=True)
@@ -127,6 +162,14 @@ class Asignatura(db.Model):
         }
 
 class Clase(db.Model):
+    """
+    Crea una nueva clase del modelo de base de datos
+
+    Args:
+        salon_id (int): Id del salón al que pertenece
+        profesor_id (int): Id del profesor encargado de la clase
+        asignatura_id (int): Id de la asignatura dictada en esta clase
+    """
     __tablename__ = 'clases'
 
     id = Column(Integer, primary_key=True)
@@ -173,6 +216,10 @@ class Estudiante(db.Model):
     notas = db.relationship('Nota', backref='estudiante')
     asistencias = db.relationship('Asistencia', backref='estudiante', lazy=True)
 
+    @property
+    def nombre_completo(self):
+        return f"{self.nombre} {self.apellido}"
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -191,6 +238,16 @@ class Estudiante(db.Model):
         }
 
 class Criterio(db.Model):
+    """
+    Crea un nuevo criterio del modelo de base de datos
+
+    Args:
+        nombre (str): El nombre
+        peso (int): El peso porcentual del criterio en su asignatura
+        periodo (Periodos): El enum del periodo al que pertenece ese criterio
+        asignatura_id (int): Id de la asignatura al que pertenece el criterio
+        grado_id (int): Id del grado al que pertenece
+    """
     __tablename__ = 'criterios'
 
     id = Column(Integer, primary_key=True)
@@ -223,6 +280,14 @@ class Criterio(db.Model):
         }
 
 class Actividad(db.Model):
+    """
+    Crea una nueva actividad del modelo de base de datos
+
+    Args:
+        nombre (str): El nombre
+        clase_id (int): Id de la clase a la que pertenece la actividad
+        criterio_id (int): Id del criterio al que pertenece
+    """
     __tablename__ = 'actividades'
 
     id = Column(Integer, primary_key=True)
@@ -249,6 +314,14 @@ class Actividad(db.Model):
         }
 
 class Nota(db.Model):
+    """
+    Crea una nueva nota del modelo de base de datos
+
+    Args:
+        calificacion (float): El valor numérico de la calificación
+        estudiante_id (int): Id del estudiante al que pertenece la calificación
+        actividad_id (int): Id de la actividad calificada
+    """
     __tablename__ = 'notas'
 
     id = Column(Integer, primary_key=True)
@@ -265,6 +338,15 @@ class Nota(db.Model):
         }
 
 class Asistencia(db.Model):
+    """
+    Crea un nuevo registro de asistencia del modelo de base de datos
+
+    Args:
+        estudiante_id (int): Id del estudiante al que se le toma la asistencia
+        clase_id (int): Id de la clase en que se toma la asistencia
+        estado (EstadoAsistencia): Enum del estado de asistencia
+        fecha (Date): fecha en la que se toma la asistencia
+    """
     __tablename__ = 'asistencias'
 
     id = Column(Integer, primary_key=True)
